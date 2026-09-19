@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpeakSphere ESL - Interactive Speaking Lab: Modals & Perfect Tenses</title>
+  <meta name="description" content="Interactive ESL speaking practice covering Present Modals, Present Perfect, Past Simple, and Past Perfect. Features audio reading, voice recording, speech-to-text grammar check, and speaking timers.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Top Header -->
+    <header class="top-header" role="banner">
+      <div class="brand-section">
+        <div class="brand-icon" aria-hidden="true">🎙️</div>
+        <div>
+          <h1 class="brand-title">
+            SpeakSphere ESL
+            <span class="brand-badge">Grammar Lab</span>
+          </h1>
+          <p class="brand-sub">Present Modals • Present Perfect • Past Simple • Past Perfect</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <!-- Progress stats badge -->
+        <button id="statsBtn" class="action-btn" title="View Practice Stats" aria-label="View Practice Stats">
+          <span aria-hidden="true">📊</span>
+          <span id="statsLabel">0/32 Spoken</span>
+        </button>
+
+        <!-- Custom Question Creator -->
+        <button id="addCustomBtn" class="action-btn" title="Add Custom Speaking Question" aria-label="Add Custom Question">
+          <span aria-hidden="true">➕</span>
+          <span>Add Prompt</span>
+        </button>
+
+        <!-- Print Worksheets -->
+        <button id="printBtn" class="action-btn" title="Print Conversation Cards / Worksheet" aria-label="Print Worksheet">
+          <span aria-hidden="true">🖨️</span>
+          <span>Print</span>
+        </button>
+
+        <!-- Dark/Light Theme Toggle -->
+        <button id="themeToggleBtn" class="action-btn" title="Toggle Dark/Light Mode" aria-label="Toggle Color Theme">
+          <span id="themeIcon" aria-hidden="true">🌙</span>
+          <span id="themeText">Dark</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Navigation (Modes) -->
+    <nav class="mode-nav" role="tablist" aria-label="Practice Modes">
+      <button class="mode-tab-btn active" role="tab" aria-selected="true" data-mode="studio">
+        <span aria-hidden="true">🎴</span> Card Studio
+      </button>
+      <button class="mode-tab-btn" role="tab" aria-selected="false" data-mode="directory">
+        <span aria-hidden="true">📋</span> Question Directory
+      </button>
+      <button class="mode-tab-btn" role="tab" aria-selected="false" data-mode="timer">
+        <span aria-hidden="true">⏱️</span> Speaking Challenge
+      </button>
+      <button class="mode-tab-btn" role="tab" aria-selected="false" data-mode="dice">
+        <span aria-hidden="true">🎲</span> Classroom Dice
+      </button>
+      <button class="mode-tab-btn" role="tab" aria-selected="false" data-mode="guide">
+        <span aria-hidden="true">📖</span> Grammar Guide
+      </button>
+    </nav>
+
+    <!-- Grammar Category Filter Bar -->
+    <section class="category-filter-bar" aria-label="Filter by Grammar Topic">
+      <button class="filter-chip active" data-filter="all">
+        <span>All Topics</span>
+        <span class="count-badge" id="badge-all">32</span>
+      </button>
+      <button class="filter-chip" data-filter="present-modals" style="--chip-accent: var(--color-modals)">
+        <span>Present Modals</span>
+        <span class="count-badge" id="badge-present-modals">8</span>
+      </button>
+      <button class="filter-chip" data-filter="present-perfect" style="--chip-accent: var(--color-pres-perf)">
+        <span>Present Perfect</span>
+        <span class="count-badge" id="badge-present-perfect">7</span>
+      </button>
+      <button class="filter-chip" data-filter="past-simple" style="--chip-accent: var(--color-past-simp)">
+        <span>Past Simple</span>
+        <span class="count-badge" id="badge-past-simple">6</span>
+      </button>
+      <button class="filter-chip" data-filter="past-perfect" style="--chip-accent: var(--color-past-perf)">
+        <span>Past Perfect</span>
+        <span class="count-badge" id="badge-past-perfect">6</span>
+      </button>
+      <button class="filter-chip" data-filter="mixed-contrast" style="--chip-accent: var(--color-mixed)">
+        <span>Mixed Contrasts</span>
+        <span class="count-badge" id="badge-mixed-contrast">5</span>
+      </button>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- MODE 1: CARD STUDIO -->
+    <!-- ================================================================= -->
+    <main id="mode-studio" class="mode-view-panel" role="main">
+      <div class="studio-container">
+
+        <div class="studio-card-wrapper">
+          <article class="speaking-card" id="mainSpeakingCard" aria-live="polite">
+            <!-- Card Meta Header -->
+            <div class="card-meta-header">
+              <div class="card-badges">
+                <span class="category-tag" id="cardCategoryTag">Present Modals</span>
+                <span class="level-tag" id="cardLevelTag">B2</span>
+                <span class="theme-tag" id="cardThemeTag">Work & Ambition</span>
+              </div>
+              <div class="card-quick-actions">
+                <button class="icon-btn" id="cardFavoriteBtn" title="Bookmark / Favorite" aria-label="Bookmark Prompt">
+                  <span aria-hidden="true">⭐</span>
+                </button>
+                <button class="icon-btn" id="cardMasteredBtn" title="Mark as Spoken / Answered" aria-label="Mark as Spoken">
+                  <span aria-hidden="true">✓</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Question Headline & Body -->
+            <h2 class="card-question-title" id="cardPromptTitle">The Career Crossroads</h2>
+            <p class="card-question-text" id="cardQuestionContent">
+              A close friend wants to quit their stable job to start a risky new online business. What advice should you give them, and what factors must they consider before making the leap?
+            </p>
+
+            <!-- Text to Speech (Audio playback) -->
+            <div class="audio-action-bar">
+              <button class="tts-play-btn" id="ttsPlayBtn" aria-label="Listen to Question Pronunciation">
+                <span id="ttsIcon" aria-hidden="true">🔊</span>
+                <span id="ttsLabel">Listen to Prompt</span>
+              </button>
+
+              <div class="audio-settings">
+                <label for="ttsSpeedSelect">Speed:</label>
+                <select id="ttsSpeedSelect" class="speed-select" aria-label="Audio Playback Speed">
+                  <option value="1.0">Normal (1.0x)</option>
+                  <option value="0.85">ESL Learner (0.85x)</option>
+                  <option value="0.7">Slow (0.7x)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Drawer Tabs (Sentence Starters, Grammar Tip, Follow-ups, Voice Studio) -->
+            <div class="card-drawer">
+              <div class="drawer-tabs" role="tablist">
+                <button class="drawer-tab active" data-tab="starters" role="tab" aria-selected="true">
+                  💡 Sentence Starters
+                </button>
+                <button class="drawer-tab" data-tab="tip" role="tab" aria-selected="false">
+                  🎯 Grammar Tip
+                </button>
+                <button class="drawer-tab" data-tab="followups" role="tab" aria-selected="false">
+                  💬 Follow-ups (<span id="followupCount">2</span>)
+                </button>
+                <button class="drawer-tab" data-tab="record" role="tab" aria-selected="false">
+                  🎙️ Voice Recording & Check
+                </button>
+              </div>
+
+              <!-- Tab 1: Starters -->
+              <div class="drawer-content-pane active" id="pane-starters" role="tabpanel">
+                <div class="sentence-starter-list" id="startersContainer">
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+
+              <!-- Tab 2: Grammar Tip -->
+              <div class="drawer-content-pane" id="pane-tip" role="tabpanel">
+                <div class="grammar-tip-box">
+                  <strong id="grammarRuleTitle">Target Grammar Rule</strong>
+                  <p id="grammarRuleBody">Explanation goes here...</p>
+                  <div class="keywords-tags" id="grammarKeywords">
+                    <!-- Injected via JS -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 3: Follow-ups -->
+              <div class="drawer-content-pane" id="pane-followups" role="tabpanel">
+                <ul class="followups-list" id="followupsContainer">
+                  <!-- Injected via JS -->
+                </ul>
+              </div>
+
+              <!-- Tab 4: Voice Recording & Grammar Checker -->
+              <div class="drawer-content-pane" id="pane-record" role="tabpanel">
+                <div class="voice-studio-panel">
+                  <div class="voice-controls-row">
+                    <button class="record-btn" id="recordToggleBtn">
+                      <span id="recIcon" aria-hidden="true">⏺️</span>
+                      <span id="recBtnLabel">Record Your Answer</span>
+                    </button>
+                    <span class="rec-timer" id="recordingTimer">00:00</span>
+                    <button class="action-btn" id="speechToTextBtn" title="Check spoken grammar with Speech Recognition">
+                      <span aria-hidden="true">✨</span> Transcribe & Check
+                    </button>
+                  </div>
+
+                  <div id="audioPlaybackContainer" style="display: none;">
+                    <audio id="audioPlayback" class="audio-preview-element" controls></audio>
+                  </div>
+
+                  <div class="speech-feedback-box" id="speechFeedbackBox" style="display: none;">
+                    <p style="font-weight: 700; margin-bottom: 0.25rem;">Transcribed Answer & Grammar Check:</p>
+                    <p id="transcriptText" style="color: var(--text-secondary);"></p>
+                    <div id="grammarDetectedAlert" style="margin-top: 0.5rem; font-weight: 600;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- Studio Navigation Bar -->
+        <div class="studio-nav-bar">
+          <span class="nav-counter" id="studioCounter">Question 1 of 32</span>
+          
+          <div class="nav-buttons-group">
+            <button class="nav-btn" id="prevCardBtn" aria-label="Previous Question (Left Arrow)">
+              <span aria-hidden="true">←</span> Previous
+            </button>
+            <button class="nav-btn" id="randomCardBtn" aria-label="Shuffle Random Question">
+              <span aria-hidden="true">🔀</span> Shuffle
+            </button>
+            <button class="nav-btn primary" id="nextCardBtn" aria-label="Next Question (Right Arrow)">
+              Next <span aria-hidden="true">→</span>
+            </button>
+          </div>
+
+          <div class="keyboard-hint" aria-hidden="true">
+            <span>Keys:</span>
+            <span class="kbd-key">←</span>
+            <span class="kbd-key">→</span>
+            <span>Space (Audio)</span>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- ================================================================= -->
+    <!-- MODE 2: QUESTION DIRECTORY (GRID & SEARCH) -->
+    <!-- ================================================================= -->
+    <section id="mode-directory" class="mode-view-panel directory-section" style="display: none;">
+      <div class="directory-filter-header">
+        <div class="search-input-wrapper">
+          <span class="search-icon" aria-hidden="true">🔍</span>
+          <input type="text" id="directorySearchInput" class="search-input" placeholder="Search by keyword, verb, topic (e.g. 'friend', 'airport', 'job')...">
+        </div>
+
+        <div class="filter-dropdowns">
+          <select id="levelFilterSelect" class="filter-select" aria-label="Filter by CEFR Level">
+            <option value="all">All Levels (B1-C1)</option>
+            <option value="B1">B1 (Intermediate)</option>
+            <option value="B2">B2 (Upper-Intermediate)</option>
+            <option value="C1">C1 (Advanced)</option>
+          </select>
+
+          <select id="themeFilterSelect" class="filter-select" aria-label="Filter by Theme">
+            <option value="all">All Themes</option>
+            <option value="Life & Experiences">Life & Experiences</option>
+            <option value="Work & Ambition">Work & Ambition</option>
+            <option value="Travel & Adventure">Travel & Adventure</option>
+            <option value="Hypothetical & Advice">Hypothetical & Advice</option>
+            <option value="Mystery & Deduction">Mystery & Deduction</option>
+            <option value="Relationships & Society">Relationships & Society</option>
+          </select>
+
+          <select id="statusFilterSelect" class="filter-select" aria-label="Filter by Status">
+            <option value="all">All Statuses</option>
+            <option value="favorites">⭐ Bookmarks</option>
+            <option value="unspoken">Unspoken Only</option>
+            <option value="spoken">✓ Mastered Only</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Grid of Questions -->
+      <div class="questions-grid" id="directoryGrid">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- MODE 3: TIMED SPEAKING CHALLENGE -->
+    <!-- ================================================================= -->
+    <section id="mode-timer" class="mode-view-panel challenge-container" style="display: none;">
+      <div class="timer-stage-card">
+        <span class="timer-phase-badge prep" id="timerPhaseBadge">Preparation Phase</span>
+        
+        <div class="timer-display-ring" id="timerDisplay">00:15</div>
+        
+        <div class="timer-progress-bar">
+          <div class="timer-progress-fill" id="timerProgressFill"></div>
+        </div>
+
+        <h3 id="timerQuestionTitle" style="font-size: 1.15rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+          The Career Crossroads
+        </h3>
+        <p id="timerQuestionText" style="font-size: 1.35rem; font-weight: 700; margin-bottom: 1.75rem; line-height: 1.4;">
+          A close friend wants to quit their stable job to start a risky new online business. What advice should you give them?
+        </p>
+
+        <!-- Timer Controls & Settings -->
+        <div class="timer-settings-row">
+          <div>
+            <label for="prepTimeSelect" style="font-size: 0.85rem; font-weight: 600;">Prep Time:</label>
+            <select id="prepTimeSelect" class="filter-select">
+              <option value="15">15 Seconds</option>
+              <option value="30">30 Seconds</option>
+              <option value="45">45 Seconds</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="speakTimeSelect" style="font-size: 0.85rem; font-weight: 600;">Speaking Time:</label>
+            <select id="speakTimeSelect" class="filter-select">
+              <option value="45">45 Seconds</option>
+              <option value="60" selected>60 Seconds (1 Min)</option>
+              <option value="90">90 Seconds (1.5 Min)</option>
+              <option value="120">120 Seconds (2 Min)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: center; gap: 0.75rem;">
+          <button class="nav-btn primary" id="startTimerBtn">
+            <span aria-hidden="true">▶️</span> Start Challenge
+          </button>
+          <button class="nav-btn" id="pauseTimerBtn" style="display: none;">
+            <span aria-hidden="true">⏸️</span> Pause
+          </button>
+          <button class="nav-btn" id="resetTimerBtn">
+            <span aria-hidden="true">🔄</span> Reset
+          </button>
+          <button class="nav-btn" id="newTimerPromptBtn">
+            <span aria-hidden="true">🔀</span> New Prompt
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- MODE 4: CLASSROOM DICE / PAIR WORK -->
+    <!-- ================================================================= -->
+    <section id="mode-dice" class="mode-view-panel dice-container" style="display: none;">
+      <div>
+        <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem;">Classroom Pair-Work Randomizer</h2>
+        <p style="color: var(--text-muted); max-width: 580px; margin: 0 auto;">
+          Click the dice to spin a random speaking prompt. Assign roles with your conversation partner, then switch after 2 minutes!
+        </p>
+      </div>
+
+      <button class="dice-button" id="rollDiceBtn" title="Click to Roll a Speaking Prompt" aria-label="Roll Dice">
+        🎲
+      </button>
+
+      <div class="pair-work-roles-grid">
+        <div class="role-card">
+          <h4>👤 Partner A (Interviewer)</h4>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+            Ask the main question clearly. Listen closely and ask at least one follow-up question:
+          </p>
+          <div id="diceFollowupSuggestion" style="font-style: italic; font-size: 0.88rem; background: var(--bg-surface-subtle); padding: 0.6rem; border-radius: 6px;">
+            "What ought they to do if their business doesn't make a profit in the first six months?"
+          </div>
+        </div>
+
+        <div class="role-card">
+          <h4>🗣️ Partner B (Speaker)</h4>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+            Speak for at least 1-2 minutes. You MUST incorporate at least one of these sentence frames:
+          </p>
+          <div id="diceStarterSuggestion" style="font-weight: 600; font-size: 0.88rem; color: var(--primary); background: var(--primary-light); padding: 0.6rem; border-radius: 6px;">
+            "In my opinion, they really should / ought to..."
+          </div>
+        </div>
+      </div>
+
+      <!-- Current Prompt Box -->
+      <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.5rem; width: 100%; text-align: left;">
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+          <span class="category-tag" id="diceCategoryTag">Present Modals</span>
+          <span class="level-tag" id="diceLevelTag">B2</span>
+        </div>
+        <h3 id="dicePromptTitle" style="font-size: 1.2rem; margin-bottom: 0.5rem;">The Career Crossroads</h3>
+        <p id="diceQuestionText" style="font-size: 1.15rem; color: var(--text-primary); line-height: 1.5;">
+          A close friend wants to quit their stable job to start a risky new online business. What advice should you give them?
+        </p>
+        <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+          <button class="action-btn" id="openInStudioBtn">
+            <span>Open in Card Studio</span> ↗
+          </button>
+          <button class="action-btn" id="diceTtsBtn">
+            <span>🔊 Read Aloud</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- MODE 5: GRAMMAR MASTER GUIDE -->
+    <!-- ================================================================= -->
+    <section id="mode-guide" class="mode-view-panel guide-container" style="display: none;">
+      <div class="guide-hero">
+        <h2>Grammar Reference Hub: The 4 Core Target Structures</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.25rem;">
+          Compare formulas, key time markers, communicative purposes, and common ESL pitfalls in one comprehensive guide.
+        </p>
+
+        <!-- Comparison Matrix -->
+        <div style="overflow-x: auto;">
+          <table class="cheat-table">
+            <thead>
+              <tr>
+                <th>Grammar Structure</th>
+                <th>Core Formula</th>
+                <th>When to Use in Speaking</th>
+                <th>Key Trigger Words</th>
+                <th>Example Spoken Response</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong style="color: var(--color-modals)">Present Modals</strong></td>
+                <td><code>Modal + Base Verb</code></td>
+                <td>Advice, obligation, capability, or present speculation</td>
+                <td>should, must, have to, might, can't be</td>
+                <td>"You <em>should</em> look for a mentor; you <em>must not</em> rush."</td>
+              </tr>
+              <tr>
+                <td><strong style="color: var(--color-pres-perf)">Present Perfect</strong></td>
+                <td><code>have/has + V3</code></td>
+                <td>Life experiences, unfinished time, recent news affecting now</td>
+                <td>ever, never, since, for, already, just, yet</td>
+                <td>"I <em>have worked</em> in finance <em>since</em> 2021."</td>
+              </tr>
+              <tr>
+                <td><strong style="color: var(--color-past-simp)">Past Simple</strong></td>
+                <td><code>V2 / didn't + V1</code></td>
+                <td>Finished past actions at a definite, specific time</td>
+                <td>yesterday, in 2019, 3 years ago, last summer</td>
+                <td>"I <em>graduated</em> from university <em>two years ago</em>."</td>
+              </tr>
+              <tr>
+                <td><strong style="color: var(--color-past-perf)">Past Perfect</strong></td>
+                <td><code>had + V3</code></td>
+                <td>An action completed BEFORE another past event (flashback)</td>
+                <td>before, by the time, already, because, had hoped</td>
+                <td>"When I arrived, the meeting <em>had already started</em>."</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Individual Cheat Sheets -->
+      <div class="cheat-sheets-grid" id="cheatSheetsGrid">
+        <!-- Rendered from GRAMMAR_CATEGORIES via JS -->
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- TEACHER / USER CUSTOM QUESTION CREATOR MODAL -->
+  <!-- ================================================================= -->
+  <div class="modal-overlay" id="customPromptModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="modalTitle" style="font-size: 1.3rem; font-weight: 700;">Add Custom Speaking Question</h3>
+        <button class="icon-btn" id="closeModalBtn" aria-label="Close dialog">✕</button>
+      </div>
+
+      <form id="customPromptForm">
+        <div class="form-group">
+          <label for="customGrammarSelect">Grammar Focus *</label>
+          <select id="customGrammarSelect" class="form-select" required>
+            <option value="present-modals">Present Modals</option>
+            <option value="present-perfect">Present Perfect</option>
+            <option value="past-simple">Past Simple</option>
+            <option value="past-perfect">Past Perfect</option>
+            <option value="mixed-contrast">Mixed Contrasts</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="customTitleInput">Topic Title *</label>
+          <input type="text" id="customTitleInput" class="form-input" placeholder="e.g., The Job Promotion" required>
+        </div>
+
+        <div class="form-group">
+          <label for="customQuestionInput">Speaking Question *</label>
+          <textarea id="customQuestionInput" class="form-textarea" rows="3" placeholder="Write the main question for your students or conversation partner..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="customFollowupInput">Follow-up Questions (one per line)</label>
+          <textarea id="customFollowupInput" class="form-textarea" rows="2" placeholder="e.g., What would happen if...?&#10;How would you handle...?"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="customStartersInput">Sentence Starters (one per line)</label>
+          <textarea id="customStartersInput" class="form-textarea" rows="2" placeholder="e.g., I believe one must...&#10;By the time they..."></textarea>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+          <button type="submit" class="nav-btn primary" style="flex: 1;">Save Question</button>
+          <button type="button" class="nav-btn" id="cancelModalBtn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast notifications container -->
+  <div class="toast-container" id="toastContainer" aria-live="assertive"></div>
+
+  <!-- Scripts -->
+  <script src="data/questions.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
